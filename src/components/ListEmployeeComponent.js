@@ -13,14 +13,32 @@ class ListEmployeeComponent extends Component{
 
   this.addEmployee=this.addEmployee.bind(this);
   this.editEmployee=this.editEmployee.bind(this);
+  this.deleteEmployee=this.deleteEmployee.bind(this);
+  this.viewEmployee=this.viewEmployee.bind(this);
+
     }
 
 editEmployee(employeId){
     this.props.history.push(`/updateEmployee/${employeId}`);
 }
 
+deleteEmployee(employeeId){
+    EmployeeService.deleteEmployee(employeeId)
+    .then(response=>response.json())
+    .then(json=>{
+        this.setState({employees:this.state.employees.filter(employee=> employee.employeId!==employeeId)})
+    })
+    
+    this.props.history.push("/");
+}
 
 
+
+
+viewEmployee(employeeId){
+    this.props.history.push(`/viewemployee/${employeeId}`)
+
+}
 componentDidMount(){
 
     EmployeeService.getEmployees()
@@ -48,7 +66,7 @@ addEmployee(){
       <table className="table table-striped table-bordered">
       <thead>
           <tr>
-             <th> Employee Id</th>
+            
               <th> Employee First Name</th>
               <th> Employee Last Name</th>
               <th> Employee Email</th>
@@ -61,11 +79,13 @@ addEmployee(){
               this.state.employees.map(
                           employee=>
              <tr key={employee.employeeId}>
-            <td>  {employee.employeeId}</td>
            <td>  {employee.firstName}</td>
            <td>   {employee.lastName}</td>
            <td>  {employee.email } </td>
            <td>  <button onClick={()=>this.editEmployee(employee.employeeId)} className="btn btn-info"> Update</button></td>
+
+           <td>  <button style={{marginLeft:'10px'}}  onClick={()=>this.deleteEmployee(employee.employeeId)} className="btn btn-danger"> Delete</button></td>
+           <td>  <button  style={{marginLeft:'10px'}} onClick={()=>this.viewEmployee(employee.employeeId)} className="btn btn-info"> View</button></td>
 
              </tr>
 
